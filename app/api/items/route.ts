@@ -10,10 +10,22 @@ export async function POST(req: NextRequest) {
                 Cookie: cookieHeader
             }
         });
+        
         const user = res.data.data;
         const user_id = user._id;
-        const { name, description, category, specs, price, stock, condition } = await req.json();
-        const result = await createItem(user_id, name, description, category, specs, price, stock, condition);
+        const formData = await req.formData();
+        const name = formData.get('name') as string;
+        const description = formData.get('description') as string;
+        const category = formData.get('category') as string;
+        const specs = formData.get('specs') as string;
+        const price = formData.get('price') as string;
+        const stock = formData.get('stock') as string;
+        const condition = formData.get('condition') as string;
+        const file = formData.get('file') as File;
+        const parsed = JSON.parse(specs);
+        let specsObject: object = typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+
+        const result = await createItem(user_id, name, description, category, specsObject, price, stock, condition, file);
 
         return NextResponse.json({
             success: true,
@@ -39,8 +51,9 @@ export async function GET(req: NextRequest) {
         const limit = searchParams.get('limit') as string;
         const item_id = searchParams.get('item_id') as string;
         const by_price = searchParams.get('by_price') as string;
+        const page = searchParams.get('page') as string;
 
-        const result = await getItems(search, by_rating, category, limit, item_id, by_price);
+        const result = await getItems(search, by_rating, category, limit, item_id, by_price, page);
 
         return NextResponse.json({
             success: true,

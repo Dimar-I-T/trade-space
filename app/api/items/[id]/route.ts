@@ -35,8 +35,19 @@ export async function PUT(req: NextRequest, {params} : RouteParams) {
             }
         });
         
-        const { name, description, category, specs, price, stock, condition } = await req.json();
-        const result = await updateItemById(item_id, name, description, category, specs, price, stock, condition);
+        const formData = await req.formData();
+        const name = formData.get('name') as string;
+        const description = formData.get('description') as string;
+        const category = formData.get('category') as string;
+        const specs = formData.get('specs') as string;
+        const price = formData.get('price') as string;
+        const stock = formData.get('stock') as string;
+        const condition = formData.get('condition') as string;
+        const file = formData.get('file') as File;
+        const existing_url = formData.get('picture_url') as string;
+        const parsed = JSON.parse(specs);
+        let specsObject: object = typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+        const result = await updateItemById(item_id, name, description, category, specsObject, price, stock, condition, file, existing_url);
 
         return NextResponse.json({
             success: true,
