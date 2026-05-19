@@ -18,6 +18,11 @@ const ItemSchema = new mongoose.Schema({
         required: true
     },
 
+    picture_url: {
+        type: String,
+        required: true
+    },
+
     category: {
         type: String,
         required: true
