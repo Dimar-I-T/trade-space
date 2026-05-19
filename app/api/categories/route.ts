@@ -1,9 +1,11 @@
 import { getCategories } from "@/services/categoryService";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
-        const result = await getCategories();
+        const searchParams = req.nextUrl.searchParams;
+        const name = searchParams.get('name') as string;
+        const result = await getCategories(name);
         return NextResponse.json({
             success: true,
             message: "Successfully retrieved all categories",
