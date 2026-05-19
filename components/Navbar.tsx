@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShoppingCart, Search } from "lucide-react";
 
 export default function Navbar() {
@@ -41,14 +42,18 @@ export default function Navbar() {
           <div className="h-7 w-[1px] bg-blue-300" />
 
           {/* Login */}
-          <button className="rounded-xl border border-blue-300 px-5 py-2 text-white transition hover:bg-blue-800">
+          <Link href="/login">
+            <button className="rounded-xl border border-blue-300 px-6 py-2 text-white transition hover:bg-blue-800">
             Login
-          </button>
+            </button>
+        </Link>
 
           {/* Register */}
-          <button className="rounded-xl border border-blue-300 px-5 py-2 text-white transition hover:bg-blue-800">
-            Register
-          </button>
+          <Link href="/register">
+            <button className="rounded-xl border border-blue-300 px-6 py-2 text-white transition hover:bg-blue-800">
+                Register
+            </button>
+        </Link>
 
         </div>
       </div>
