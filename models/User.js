@@ -30,6 +30,11 @@ const UserSchema = new mongoose.Schema({
         unique: true
     },
 
+    password: {
+        type: String,
+        required: true,
+    },
+
     is_verified: {
         type: Boolean,
         default: false,
