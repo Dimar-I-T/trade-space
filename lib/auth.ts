@@ -1,34 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import User from '@/models/User';
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+import { JwtPayload } from "jsonwebtoken";
 
-/**
- * Helper untuk simulasi autentikasi.
- * Mengambil user_id dari header "x-user-id".
- * Pada implementasi nyata, ini akan diganti dengan JWT / session.
- */
-export async function getAuthUser(request: NextRequest) {
-    const userId = request.headers.get('x-user-id');
-
-    if (!userId) {
-        return null;
+export async function getAuth(): Promise<JwtPayload | null> {
+    const cookie = await cookies();
+    const token = cookie.get('token')?.value;
+    if (!token) {
+        throw Error('Unauthorized! You must login');
     }
 
-    await dbConnect();
-    const user = await User.findById(userId);
-    return user;
-}
-
-/**
- * Helper untuk mengembalikan response unauthorized.
- */
-export function unauthorizedResponse() {
-    return NextResponse.json(
-        {
-            success: false,
-            message: "Anda harus login terlebih dahulu",
-            data: null
-        },
-        { status: 401 }
-    );
+    try {
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token, secret);
+        return payload as unknown as JwtPayload;
+    } catch (error: any) {
+        return null;
+    }
 }

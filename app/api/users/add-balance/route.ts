@@ -1,54 +1,25 @@
-import { NextResponse } from 'next/server';
-import connectMongoDB from '@/lib/mongodb';
-import User from '@/models/User';
+import { getAuth } from '@/lib/auth';
+import { JwtPayload } from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
+import { addBalance } from '@/services/userService';
 
-export async function PUT(
-    Request: Request,
-    { body }: { body: { amount: number } }
-) {
+export async function PUT(req: NextRequest) {
     try {
-        await connectMongoDB();
-        const { amount } = await Request.json();
+        const payload: JwtPayload | null = await getAuth();
+        const user_id = payload?._id;
 
-        if (!amount || typeof amount !== 'number' || amount <= 0) {
-            return NextResponse.json(
-                { success: false, message: "Invalid amount", data: null },
-                { status: 400 }
-            );
-        }
+        const { amount } = await req.json();
+        const result = await addBalance(user_id, amount);
 
-        const userId = request.headers.get('X-User-Id');
-        if (!userId) {
-            return NextResponse.json(
-                { success: false, message: "User not authenticated", data: null },
-                { status: 401 }
-            );
-        }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return NextResponse.json(
-                { success: false, message: "User not found", data: null },
-                { status: 404 }
-            );
-        }
-
-        user.balance += amount;
-        await user.save();
-
-        return NextResponse.json(
-            {
-                success: true,
-                message: "Balance updated successfully",
-                data: user
-            },
-            { status: 200 }
-        );
-
+        return NextResponse.json({
+            success: true,
+            message: 'Balance berhasil ditambahkan',
+            data: result
+        });
     } catch (error: any) {
-        return NextResponse.json(
-            { success: false, message: "Server error", data: null },
-            { status: 500 }
-        );
+        return NextResponse.json({
+            success: false,
+            message: error
+        }, { status: 500 });
     }
 }
