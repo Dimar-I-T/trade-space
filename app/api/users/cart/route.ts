@@ -8,6 +8,8 @@ export async function GET() {
         const payload: JwtPayload | null = await getAuth();
         const user_id = payload?._id;
 
+        console.log(user_id)
+
         const result = await getCart(user_id);
 
         return NextResponse.json({
@@ -30,7 +32,11 @@ export async function PUT(req: NextRequest) {
         const user_id = payload?._id;
 
         const { item_id, qty, price_snap } = await req.json();
+        console.log("item_id: " + item_id);
+        console.log("qty: " + qty);
+        console.log("price_snap: " + price_snap);
         const result = await updateCart(user_id, item_id, qty, price_snap);
+
 
         return NextResponse.json({
             success: true,

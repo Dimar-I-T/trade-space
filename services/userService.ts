@@ -110,7 +110,7 @@ export async function deleteCartItem(user_id: string, cart_item_id: string) {
 
         const originalLength = user.cart.length;
         user.cart = user.cart.filter(
-            (cartItem: any) => cartItem._id.toString() !== cart_item_id
+            (cartItem: any) => cartItem.item_id.toString() !== cart_item_id
         );
 
         if (user.cart.length === originalLength) {
