@@ -41,7 +41,7 @@ export async function getItems(search: string, user_id: string, by_rating: boole
         if (item_id) {
             const item = await Item.findById(item_id).lean();
             if (!item) {
-                throw new Error("Item not found");
+                throw Error("Item not found");
             }
 
             return item;
@@ -51,8 +51,9 @@ export async function getItems(search: string, user_id: string, by_rating: boole
             const items = await Item.find({
                 seller_id: user_id
             }).lean();
+
             if (items.length === 0) {
-                throw new Error('Item not found for that user');
+                throw Error('Item not found for that user');
             }
 
             return items;
@@ -95,7 +96,7 @@ export async function getItems(search: string, user_id: string, by_rating: boole
         const items = await queryBuilder.lean().exec();
         return items;
     } catch (error: any) {
-        throw new Error(error.message);
+        throw error.message;
     }
 }
 
