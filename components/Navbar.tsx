@@ -63,9 +63,6 @@ export default function Navbar() {
 
         {/* LEFT */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-300">
-            💻
-          </div>
           <h1 className="text-2xl font-bold text-white">
             Trade<span className="text-blue-300">Space</span>
           </h1>
