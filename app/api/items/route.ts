@@ -50,10 +50,11 @@ export async function GET(req: NextRequest) {
         const category = searchParams.get('category') as string;
         const limit = searchParams.get('limit') as string;
         const item_id = searchParams.get('item_id') as string;
+        const user_id = searchParams.get('user_id') as string;
         const by_price = searchParams.get('by_price') as string;
         const page = searchParams.get('page') as string;
 
-        const result = await getItems(search, by_rating, category, limit, item_id, by_price, page);
+        const result = await getItems(search, user_id, by_rating, category, limit, item_id, by_price, page);
 
         return NextResponse.json({
             success: true,
