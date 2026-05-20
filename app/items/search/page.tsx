@@ -57,7 +57,7 @@ function SearchContent() {
     const [loading, setLoading] = useState(true);
     const [hasMore, setHasMore] = useState(false);
 
-    const [showFilters, setShowFilters] = useState(false);
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Fetch categories once
