@@ -6,7 +6,8 @@ import Navbar from "@/components/Navbar";
 
 interface CartItem {
     _id: string;
-    quantity: number;
+    qty : number;
+    price_snap: number;
     item_id?: {
         _id: string;
         name?: string;
@@ -52,7 +53,7 @@ export default function CartPage() {
             else if (Array.isArray(data.cart)) extractedItems = data.cart;
             else if (data.data && Array.isArray(data.data.cart)) extractedItems = data.data.cart;
             else if (data.user && Array.isArray(data.user.cart)) extractedItems = data.user.cart;
-
+        
             setCartItems(extractedItems);
         } catch (err) {
             setError("gagal memuat data keranjang");
@@ -65,14 +66,14 @@ export default function CartPage() {
         fetchCart();
     }, []);
 
-    const handleUpdateQuantity = async (targetId: string, newQuantity: number) => {
-        if (newQuantity < 1) return;
+    const handleUpdateqty = async (targetId: string, newqty: number) => {
+        if (newqty < 1) return;
         setActionLoading(targetId);
         try {
             const res = await fetch(`/api/users/cart/${targetId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ quantity: newQuantity }),
+                body: JSON.stringify({ qty: newqty }),
             });
 
             if (res.status === 401 || res.status === 403) {
@@ -84,7 +85,7 @@ export default function CartPage() {
                 setCartItems((prev) =>
                     prev.map((item) => {
                         const id = item.item_id?._id || item.itemId?._id || item._id;
-                        return id === targetId ? { ...item, quantity: newQuantity } : item;
+                        return id === targetId ? { ...item, qty: newqty } : item;
                     })
                 );
             }
@@ -127,7 +128,7 @@ export default function CartPage() {
         return cartItems.reduce((total, entry) => {
             const product = entry.item_id || entry.itemId;
             const price = product?.price ?? 0;
-            return total + price * entry.quantity;
+            return total + price * entry.qty;
         }, 0);
     };
 
@@ -170,8 +171,8 @@ export default function CartPage() {
                                 const productId = product?._id || entry._id;
                                 const productName = product?.name || product?.title || "produk tidak dikenal";
                                 const productImg = product?.picture_url || product?.image;
-                                const price = product?.price ?? 0;
-                                const itemSubtotal = price * entry.quantity;
+                                const price = entry?.price_snap ?? 0;
+                                const itemSubtotal = price * entry.qty;
 
                                 return (
                                     <div key={entry._id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 bg-white">
@@ -197,17 +198,17 @@ export default function CartPage() {
                                             <div className="flex items-center border border-neutral-200 bg-neutral-50 rounded-lg overflow-hidden shadow-sm">
                                                 <button
                                                     disabled={actionLoading === productId}
-                                                    onClick={() => handleUpdateQuantity(productId, entry.quantity - 1)}
+                                                    onClick={() => handleUpdateqty(productId, entry.qty - 1)}
                                                     className="px-3 py-1.5 hover:bg-neutral-200 text-neutral-600 font-bold transition disabled:opacity-50"
                                                 >
                                                     -
                                                 </button>
                                                 <span className="px-3 text-sm font-bold w-10 text-center text-neutral-800">
-                                                    {entry.quantity}
+                                                    {entry.qty}
                                                 </span>
                                                 <button
                                                     disabled={actionLoading === productId}
-                                                    onClick={() => handleUpdateQuantity(productId, entry.quantity + 1)}
+                                                    onClick={() => handleUpdateqty(productId, entry.qty + 1)}
                                                     className="px-3 py-1.5 hover:bg-neutral-200 text-neutral-600 font-bold transition disabled:opacity-50"
                                                 >
                                                     +

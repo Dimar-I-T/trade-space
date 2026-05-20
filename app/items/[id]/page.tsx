@@ -72,9 +72,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         setMessage("");
         try {
             const res = await fetch("/api/users/cart", {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ itemId: id, item_id: id, quantity }),
+                body: JSON.stringify({ item_id: id, qty: quantity, price_snap: item?.price }),
             });
 
             if (res.ok) {
