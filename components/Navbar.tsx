@@ -18,7 +18,14 @@ export default function Navbar() {
   const [authChecked, setAuthChecked] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchInput.trim();
+    router.push(q ? `/items/search?q=${encodeURIComponent(q)}` : "/items/search");
+  };
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -69,14 +76,18 @@ export default function Navbar() {
         </Link>
 
         {/* CENTER */}
-        <div className="mx-10 flex w-full max-w-xl items-center rounded-2xl border border-blue-300 bg-[#22306B] px-4 py-2">
-          <Search className="mr-2 text-gray-300 flex-shrink-0" size={18} />
+        <form onSubmit={handleSearch} className="mx-10 flex w-full max-w-xl items-center rounded-2xl border border-blue-300 bg-[#22306B] px-4 py-2 focus-within:border-cyan-400 transition">
+          <button type="submit" className="mr-2 text-gray-300 hover:text-cyan-400 transition flex-shrink-0">
+            <Search size={18} />
+          </button>
           <input
             type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search for laptops, gadgets, and electronics"
             className="w-full bg-transparent text-white placeholder:text-gray-300 outline-none text-sm"
           />
-        </div>
+        </form>
 
         {/* RIGHT */}
         <div className="flex items-center gap-3 flex-shrink-0">
