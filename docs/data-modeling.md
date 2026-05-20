@@ -17,9 +17,9 @@ title: data-modeling
 
 ## Category Collection
 ![Screenshot 2026-05-20 141036](https://hackmd.io/_uploads/r1UkGNoyGe.png)
-Category collection is for standard metadata item's category.
+<br>Category collection is for standard metadata item's category.
 
 ## Transaction Collection
 ![Screenshot 2026-05-20 141137](https://hackmd.io/_uploads/HkRzGVi1Ge.png)
-This is for immutable historical record, referential integrity, transaction lifecycle, and audit trail.
+<br>This is for immutable historical record, referential integrity, transaction lifecycle, and audit trail.
 
