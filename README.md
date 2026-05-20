@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TradeSpace
+A student-focused marketplace platform for buying and selling tech gadgets and electronics among verified university students. The platform accommodates a wide variety of product categories such as laptops, smartphones, and peripherals, where each listing can have different and flexible attributes depending on its product type. Access is restricted to verified university students through campus email verification, creating a trusted and focused trading community.
 
-## Getting Started
+# Tech Stack
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![NPM](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 
-First, run the development server:
+# Diagram
+## System Design
+<img width="1124" height="334" alt="image" src="https://github.com/user-attachments/assets/839bce4d-f48f-49cc-83b2-638d86abff49" />
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## User Flow
+<img width="6970" height="3187" alt="Flowchart Framework-2026-05-20-080118" src="https://github.com/user-attachments/assets/b87689dd-f10d-4997-8c5a-2913628be6c0" />
+
+## API Diagram
+<img width="8192" height="3527" alt="Flowchart Framework-2026-05-20-121816" src="https://github.com/user-attachments/assets/06344d42-c7b2-4883-b291-eb4fb454cc24" />
+
+## UML: Sequence Diagram
+<img width="1013" height="821" alt="Screenshot 2026-05-17 173941" src="https://github.com/user-attachments/assets/60d0a1b5-6a35-4428-99fb-77567025201e" />
+
+# Installation Guide
+- Clone this repository <br>
+```
+git clone https://github.com/Dimar-I-T/kantekuy.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Ensure you're on the right folder
+- Run npm install to install all dependencies <br>
+```
+npm install
+```
+- To test the installation result run <br>
+```
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Development Team
+- **Dimar Ilham Tamara** | Backend Developer
+  - Designed the architecture for the web application.
+  - Created and optimized the NoSQL database structure.
+  - Built robust RESTful APIs for users, items, reviews, and categories CRUD to serve dynamic data to the frontend.
+  - Crafted intuitive user flows.
+ 
+- **Valiant Joshua** | Backend Developer
+  - Built robust RESTful APIs for carts and transactions CRUD to serve dynamic data to the frontend.
+ 
+- **Irgy Rabbani Sakti** | Frontend Developer
+  - Translated UI/UX designs into responsive, interactive web interfaces utilizing Next.js, TypeScript, and Tailwind CSS.
+  - Integrated backend REST APIs to dynamically display data from backend in realtime.
+ 
+- **Ade Zaskia** | Frontend Developer
+  - Translated UI/UX designs into responsive, interactive web interfaces utilizing Next.js, TypeScript, and Tailwind CSS.
+  - Integrated backend REST APIs to dynamically display data from backend in realtime.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Muhammad Dhiya'Ulhaq** | Frontend Developer
+  - Translated UI/UX designs into responsive, interactive web interfaces utilizing Next.js, TypeScript, and Tailwind CSS.
+  - Integrated backend REST APIs to dynamically display data from backend in realtime.
