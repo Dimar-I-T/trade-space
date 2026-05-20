@@ -275,6 +275,8 @@ Returns all items currently in the authenticated user's cart.
 **PUT** `/api/users/cart` *Requires authentication*
 
 Adds an item to the authenticated user's cart.
+
+**Example**<br>
 ![2c5ef792-93d9-478c-ae6c-b21994d18109](https://hackmd.io/_uploads/BkOGDNj1Mx.png)
 
 ---
