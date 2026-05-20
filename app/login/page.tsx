@@ -27,6 +27,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (data.success) {
+        alert('Login berhasil!');
         router.push("/");
       } else {
         alert(data.message || "Login gagal");
