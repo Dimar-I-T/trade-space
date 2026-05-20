@@ -46,7 +46,8 @@ export async function GET(req: NextRequest) {
                     brand: "DummyBrand", 
                     model: `Model-X${x}`, 
                     color: "Black/White" 
-                }, 
+                },
+                picture_url: "e", 
                 price: Math.floor(Math.random() * 10000000) + 500000, 
                 stock: Math.floor(Math.random() * 100) + 1,
                 condition: randomCondition,
