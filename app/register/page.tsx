@@ -30,6 +30,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (data.success) {
+        alert('Registrasi berhasil! Silakan login.');
         router.push("/login");
       } else {
         alert(data.message || "Register gagal");
