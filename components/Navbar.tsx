@@ -34,9 +34,11 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
 
           {/* Cart */}
-          <button className="rounded-xl border border-blue-300 p-2.5 text-white transition hover:bg-blue-800">
-            <ShoppingCart size={20} />
-          </button>
+          <Link href="/cart">
+            <button className="rounded-xl border border-blue-300 p-2.5 text-white transition hover:bg-blue-800">
+              <ShoppingCart size={20} />
+            </button>
+          </Link>
 
           {/* Divider */}
           <div className="h-7 w-[1px] bg-blue-300" />
