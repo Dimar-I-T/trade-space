@@ -150,10 +150,12 @@ export default function Navbar() {
                           Rp {(user.balance ?? 0).toLocaleString("id-ID")}
                         </p>
                       </div>
-                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition">
-                        <Plus size={13} />
-                        Top Up
-                      </button>
+                      <Link href="/top-up">
+                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition">
+                          <Plus size={13} />
+                          Top Up
+                        </button>
+                      </Link>
                     </div>
 
                     {/* Menu items */}
