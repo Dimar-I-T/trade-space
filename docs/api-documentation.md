@@ -17,7 +17,7 @@ title: api-documentation
 | email | string | User email address |
 | password | string | User password |
 
-**Example**
+**Example**<br>
 ![dfe1fc33-4da7-4234-bae3-6aaa2d8b842a](https://hackmd.io/_uploads/SJcQVVoJzl.png)
 
 
@@ -32,7 +32,7 @@ title: api-documentation
 | email | string | User email address |
 | password | string | User password |
 
-**Response** — Returns a JWT token signed with `user_id`, stored in a cookie upon successful login.
+**Response**  Returns a JWT token signed with `user_id`, stored in a cookie upon successful login.
 ```json
 {
   "success": true,
@@ -41,7 +41,7 @@ title: api-documentation
 }
 ```
 
-**Example**
+**Example**<br>
 ![b4b42c64-03f4-4b8e-8dfd-67503db63434](https://hackmd.io/_uploads/SJRPE4sJfl.png)
 
 ---
@@ -51,7 +51,7 @@ title: api-documentation
 
 Retrieves the full user data from the database based on the `user_id` from the authenticated JWT token.
 
-**Example**
+**Example**<br>
 ![bc3564d5-a067-4387-a341-6d376161963b](https://hackmd.io/_uploads/r14oNEjyfe.png)
 
 
@@ -76,7 +76,7 @@ Returns all available categories on the platform. Used as metadata on the fronte
 |-----------|------|-------------|
 | name | string | Filter categories by name |
 
-**Example**
+**Example**<br>
 ![11b7568c-ff82-4936-8a81-4af08d711cf8](https://hackmd.io/_uploads/B1UAE4i1zx.png)
 
 
@@ -98,7 +98,7 @@ Returns a paginated list of items with optional filters. Used on the homepage an
 | category | string | Filter by category |
 | seller_id | string | Filter by seller's user ID |
 
-**Example**
+**Example**<br>
 ![4efa69c6-9b0f-4bd3-a3b2-74f92a9d1e4f](https://hackmd.io/_uploads/H1GxHNi1fl.png)
 
 ---
@@ -113,7 +113,7 @@ Fetches a single item by its ID.
 |-----------|------|-------------|
 | id | string | The item's unique ID |
 
-**Example**
+**Example**<br>
 ![2477b82f-25dc-4bc2-a309-b722f527d437](https://hackmd.io/_uploads/Syp8BEo1fx.png)
 
 
@@ -143,7 +143,7 @@ Fetches a single item by its ID.
 }
 ```
 
-**Example**
+**Example**<br>
 ![676d9a10-7356-429c-92c3-ad456819abda](https://hackmd.io/_uploads/Byf9BVs1zg.png)
 
 
@@ -178,7 +178,7 @@ Fetches a single item by its ID.
 }
 ```
 
-**Example**
+**Example**<br>
 ![dd9dff94-c75d-4f8f-8281-d97762557871](https://hackmd.io/_uploads/HyLTSEskGg.png)
 
 
@@ -192,7 +192,7 @@ Fetches a single item by its ID.
 |-----------|------|-------------|
 | id | string | The item's unique ID |
 
-**Example**
+**Example**<br>
 ![43b5fa67-e4f1-49f1-8fd5-3a445f7b30fb](https://hackmd.io/_uploads/B1s1UNikMg.png)
 
 ---
@@ -209,7 +209,7 @@ Fetches a single item by its ID.
 | rating | number | Rating score |
 | comment | string | Review comment |
 
-**Example**
+**Example**<br>
 ![9f8b5eb6-b572-4378-88b1-bc1aaaaaed13](https://hackmd.io/_uploads/SkaZLVokGl.png)
 
 ---
@@ -229,7 +229,7 @@ Deletes a review. Only the owner of the review can delete it (`user_id` must mat
 |-------|------|-------------|
 | item_id | string | The ID of the associated item |
 
-**Example**
+**Example**<br>
 ![da64e5e8-457b-4b42-bfe7-3a2cb5eeae89](https://hackmd.io/_uploads/r1tPI4j1zg.png)
 
 ---
@@ -246,7 +246,7 @@ Returns the public profile of a user by their ID.
 |-----------|------|-------------|
 | id | string | The user's unique ID |
 
-**Example**
+**Example**<br>
 ![bc956cce-91b3-4f99-846e-1c450f5d06a9](https://hackmd.io/_uploads/SJeK8VikGe.png)
 
 ---
@@ -256,7 +256,7 @@ Returns the public profile of a user by their ID.
 
 Adds balance to the authenticated user's account. *(Dummy implementationm, no payment gateway integration at this time.)*
 
-**Example**
+**Example**<br>
 ![6a1d835e-e460-4aa3-a1e0-38f595ae7f9f](https://hackmd.io/_uploads/HknjL4ikGl.png)
 
 ---
@@ -266,7 +266,7 @@ Adds balance to the authenticated user's account. *(Dummy implementationm, no pa
 
 Returns all items currently in the authenticated user's cart.
 
-**Example**
+**Example**<br>
 ![image](https://hackmd.io/_uploads/ryTewEs1Mg.png)
 
 ---
@@ -289,7 +289,7 @@ Removes a specific item from the cart.
 |-----------|------|-------------|
 | id | string | The cart item's unique ID |
 
-**Example**
+**Example**<br>
 ![e60318f6-7460-4b7c-8351-38e6f127af24](https://hackmd.io/_uploads/SyHIDEjyze.png)
 
 ---
@@ -315,7 +315,7 @@ If conditions are met, the following actions are performed:
 |-------|------|-------------|
 | item_id | string | The ID of the item being purchased |
 
-**Example**
+**Example**<br>
 ![e9496d92-8dc6-462a-8a03-51266345f3d7](https://hackmd.io/_uploads/BkKwDNo1Gl.png)
 
 
@@ -326,7 +326,7 @@ If conditions are met, the following actions are performed:
 
 Returns the transaction history for the authenticated user.
 
-**Example**
+**Example**<br>
 ![3688939d-5102-4eca-922b-e2e688bae70b](https://hackmd.io/_uploads/rJMKvEoyzg.png)
 
 
