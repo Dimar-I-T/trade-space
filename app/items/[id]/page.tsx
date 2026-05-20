@@ -6,11 +6,14 @@ import Navbar from "@/components/Navbar";
 
 interface Review {
     _id: string;
-    user_id?: { username: string } | string;
-    userId?: { username: string } | string;
+    from_user?: { _id?: string; username?: string; name?: string } | string;
+    user_id?: { _id?: string; username?: string; name?: string } | string;
+    userId?: { _id?: string; username?: string; name?: string } | string;
+    user?: { _id?: string; username?: string; name?: string } | string;
     rating: number;
     comment: string;
     createdAt?: string;
+    date?: string;
 }
 
 interface Item {
@@ -28,35 +31,112 @@ interface Item {
     soldCount?: number;
 }
 
+// Komponen Card review
+const ReviewCard = ({ review, currentUser }: { review: Review; currentUser: any }) => {
+    const [reviewerName, setReviewerName] = useState<string>("memuat...");
+
+    useEffect(() => {
+        const reviewerId = review.from_user || review.user_id || review.userId || review.user;
+
+        if (!reviewerId) {
+            setReviewerName("pengguna anonim");
+            return;
+        }
+
+        if (typeof reviewerId === "object") {
+            setReviewerName(reviewerId.username || reviewerId.name || "pengguna");
+            return;
+        }
+
+        if (currentUser && currentUser._id === reviewerId) {
+            setReviewerName(currentUser.username || "Kamu");
+            return;
+        }
+
+        fetch(`/api/users/${reviewerId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.data) {
+                    setReviewerName(data.data.username || data.data.name || "pengguna");
+                } else {
+                    setReviewerName("pengguna anonim");
+                }
+            })
+            .catch(() => setReviewerName("pengguna anonim"));
+
+    }, [review, currentUser]);
+
+    const rawDate = review.createdAt || review.date;
+    const formattedDate = rawDate
+        ? new Date(rawDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+        : "";
+
+    return (
+        <div className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                    <span className="font-bold text-sm text-neutral-900 capitalize">
+                        {reviewerName}
+                    </span>
+                    {formattedDate && (
+                        <span className="text-xs text-neutral-400 font-medium">• {formattedDate}</span>
+                    )}
+                </div>
+                <div className="flex items-center gap-1 text-amber-500 text-xs">
+                    {"★".repeat(review.rating)}
+                    <span className="text-neutral-300">{"★".repeat(5 - review.rating)}</span>
+                </div>
+            </div>
+            <p className="text-neutral-700 text-sm leading-relaxed">{review.comment}</p>
+        </div>
+    );
+};
+
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
     const [item, setItem] = useState<Item | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [currentUser, setCurrentUser] = useState<{ _id?: string; username?: string; name?: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [actionLoading, setActionLoading] = useState(false);
     const [message, setMessage] = useState("");
 
+    const [newRating, setNewRating] = useState(5);
+    const [newComment, setNewComment] = useState("");
+    const [submitReviewLoading, setSubmitReviewLoading] = useState(false);
+    const [reviewMessage, setReviewMessage] = useState("");
+
     useEffect(() => {
         async function fetchData() {
             try {
+                const userRes = await fetch("/api/auth/me");
+                let userDataForState = null;
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    userDataForState = userData.user || userData.data;
+                    setCurrentUser(userDataForState);
+                }
+
                 const itemRes = await fetch(`/api/items/${id}`);
                 if (!itemRes.ok) throw new Error();
                 const itemData = await itemRes.json();
                 const fetchedItem = itemData.data || itemData.item || itemData;
                 setItem(fetchedItem);
 
+                let extractedReviews: Review[] = [];
                 if (fetchedItem.reviews && Array.isArray(fetchedItem.reviews)) {
-                    setReviews(fetchedItem.reviews);
+                    extractedReviews = fetchedItem.reviews;
                 } else {
                     const reviewRes = await fetch(`/api/reviews?item_id=${id}`);
                     if (reviewRes.ok) {
                         const reviewData = await reviewRes.json();
-                        const extractedReviews = reviewData.data || reviewData.reviews || (Array.isArray(reviewData) ? reviewData : []);
-                        setReviews(extractedReviews);
+                        extractedReviews = reviewData.data || reviewData.reviews || (Array.isArray(reviewData) ? reviewData : []);
                     }
                 }
+
+                setReviews(extractedReviews.reverse());
             } catch (err) {
                 setMessage("produk tidak ditemukan");
             } finally {
@@ -66,15 +146,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         fetchData();
     }, [id]);
 
-    // fungsi add to cart
     const handleAddToCart = async () => {
         setActionLoading(true);
         setMessage("");
         try {
             const res = await fetch("/api/users/cart", {
-                method: "PUT",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ item_id: id, qty: quantity, price_snap: item?.price }),
+                body: JSON.stringify({ item_id: id, itemId: id, quantity }),
             });
 
             if (res.ok) {
@@ -90,6 +169,56 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             setMessage("terjadi kesalahan sistem");
         } finally {
             setActionLoading(false);
+        }
+    };
+
+    const handleSubmitReview = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newComment.trim()) {
+            setReviewMessage("komentar tidak boleh kosong");
+            return;
+        }
+
+        setSubmitReviewLoading(true);
+        setReviewMessage("");
+
+        try {
+            const res = await fetch("/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ item_id: id, itemId: id, rating: newRating, comment: newComment }),
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                router.push("/login");
+                return;
+            }
+
+            if (res.ok) {
+                const data = await res.json();
+                const rawBackendReview = data.data || data.review;
+
+                const addedReview: Review = {
+                    _id: rawBackendReview?._id || Date.now().toString(),
+                    rating: newRating,
+                    comment: newComment,
+                    from_user: currentUser?._id,
+                    createdAt: new Date().toISOString(),
+                };
+
+                setReviews((prev) => [addedReview, ...prev]);
+                setNewComment("");
+                setNewRating(5);
+                setReviewMessage("Review berhasil ditambahkan!");
+                setTimeout(() => setReviewMessage(""), 3000);
+            } else {
+                const errData = await res.json();
+                setReviewMessage(errData.message || "gagal menambahkan review");
+            }
+        } catch (err) {
+            setReviewMessage("terjadi kesalahan sistem");
+        } finally {
+            setSubmitReviewLoading(false);
         }
     };
 
@@ -229,30 +358,60 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 <div className="border-t border-neutral-200 pt-12">
-                    <h2 className="text-xl font-bold text-neutral-900 mb-6">ulasan & komentar pembeli</h2>
+                    <h2 className="text-xl font-bold text-neutral-900 mb-8">Review & komentar pembeli</h2>
+
+                    <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 shadow-sm mb-8">
+                        <h3 className="font-bold text-neutral-900 text-sm mb-4">
+                            tulis review sebagai <span className="text-blue-600 capitalize">{currentUser?.username || "pengguna"}</span>
+                        </h3>
+                        <form onSubmit={handleSubmitReview} className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">rating</label>
+                                <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setNewRating(star)}
+                                            className={`text-2xl focus:outline-none transition-colors ${star <= newRating ? "text-amber-500" : "text-neutral-300"}`}
+                                        >
+                                            ★
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">komentar</label>
+                                <textarea
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    rows={3}
+                                    className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm bg-white"
+                                    placeholder="bagaimana pendapatmu tentang produk ini?"
+                                ></textarea>
+                            </div>
+                            <div className="flex items-center justify-between pt-2">
+                                <span className={`text-xs font-bold ${reviewMessage.includes('berhasil') ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                    {reviewMessage}
+                                </span>
+                                <button
+                                    type="submit"
+                                    disabled={submitReviewLoading}
+                                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 text-white font-bold text-sm rounded-lg transition shadow-sm"
+                                >
+                                    {submitReviewLoading ? "mengirim..." : "kirim review"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                     {reviews.length === 0 ? (
-                        <p className="text-sm text-neutral-400 italic">belum ada ulasan untuk produk ini.</p>
+                        <p className="text-sm text-neutral-400 italic">belum ada review untuk produk ini. jadilah yang pertama!</p>
                     ) : (
                         <div className="space-y-6">
-                            {reviews.map((review) => {
-                                const reviewerObj = review.user_id || review.userId;
-                                const reviewerName = typeof reviewerObj === "object" ? reviewerObj.username : "pengguna";
-
-                                return (
-                                    <div key={review._id} className="bg-neutral-50 border border-neutral-200 rounded-xl p-5 shadow-sm">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-bold text-sm text-neutral-900">
-                                                {reviewerName}
-                                            </span>
-                                            <div className="flex items-center gap-1 text-amber-500 text-xs">
-                                                {"★".repeat(review.rating)}
-                                                {"☆".repeat(5 - review.rating)}
-                                            </div>
-                                        </div>
-                                        <p className="text-neutral-700 text-sm leading-relaxed">{review.comment}</p>
-                                    </div>
-                                );
-                            })}
+                            {reviews.map((review) => (
+                                <ReviewCard key={review._id} review={review} currentUser={currentUser} />
+                            ))}
                         </div>
                     )}
                 </div>
