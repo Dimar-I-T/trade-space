@@ -35,7 +35,7 @@ export async function createItem(user_id: string, name: string, description: str
     }
 }
 
-export async function getItems(search: string, by_rating: boolean, category: string, limit: string, item_id: string, by_price: string, page: string) {
+export async function getItems(search: string, user_id: string, by_rating: boolean, category: string, limit: string, item_id: string, by_price: string, page: string) {
     try {
         await dbConnect();
         if (item_id) {
@@ -45,6 +45,17 @@ export async function getItems(search: string, by_rating: boolean, category: str
             }
 
             return item;
+        }
+
+        if (user_id) {
+            const items = await Item.find({
+                seller_id: user_id
+            }).lean();
+            if (items.length === 0) {
+                throw new Error('Item not found for that user');
+            }
+
+            return items;
         }
 
         const query: any = {};
