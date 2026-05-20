@@ -76,7 +76,9 @@ export default function TopUpPage() {
                 return;
             }
 
-            setNewBalance(data.data?.balance ?? balance + effectiveAmount);
+            const updated = data.data?.balance ?? balance + effectiveAmount;
+            setNewBalance(updated);
+            setBalance(updated);   // keep balance fresh for "Top Up Again"
             setSuccess(true);
         } catch {
             setError("Something went wrong. Please try again.");
