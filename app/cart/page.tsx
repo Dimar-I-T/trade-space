@@ -47,8 +47,8 @@ export default function CartPage() {
             }
 
             if (!res.ok) {
-                // Backend melempar 500 saat belum login (getAuth throw)
-                // Cek pesan error untuk membedakan "belum login" vs error sungguhan
+                // Backend throws 500 when not logged in (getAuth throws)
+                // Check error message to distinguish "unauthenticated" vs real server error
                 const errData = await res.json().catch(() => ({}));
                 const msg: string = errData?.message ?? "";
                 if (msg.toLowerCase().includes("unauthorized") || msg.toLowerCase().includes("must login")) {
@@ -70,7 +70,7 @@ export default function CartPage() {
 
             setCartItems(extractedItems);
         } catch (err) {
-            setError("gagal memuat data keranjang");
+            setError("Failed to load cart.");
         } finally {
             setLoading(false);
         }
@@ -81,7 +81,7 @@ export default function CartPage() {
     }, []);
 
     const handleDeleteItem = async (targetId: string) => {
-        if (!confirm("apakah kamu yakin ingin menghapus item ini?")) return;
+        if (!confirm("Are you sure you want to remove this item?")) return;
         setActionLoading(targetId);
         try {
             const res = await fetch(`/api/users/cart/${targetId}`, {
@@ -102,7 +102,7 @@ export default function CartPage() {
                 );
             }
         } catch (err) {
-            setError("gagal menghapus item");
+            setError("Failed to remove item.");
         } finally {
             setActionLoading(null);
         }
@@ -114,7 +114,7 @@ export default function CartPage() {
             return;
         }
         // TODO: implementasi checkout
-        alert("fitur checkout segera hadir!");
+        alert("Checkout coming soon!");
     };
 
     const calculateGrandTotal = () => {
@@ -127,7 +127,7 @@ export default function CartPage() {
     if (loading) {
         return (
             <div className="min-h-screen bg-[#0D1229] flex items-center justify-center">
-                <p className="text-cyan-400 text-lg font-medium animate-pulse">memuat keranjang belanja...</p>
+                <p className="text-cyan-400 text-lg font-medium animate-pulse">Loading your cart...</p>
             </div>
         );
     }
@@ -144,29 +144,29 @@ export default function CartPage() {
                         </svg>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-white mb-3">Keranjang Belanja</h1>
-                    <p className="text-gray-400 mb-2">Kamu belum login.</p>
+                    <h1 className="text-2xl font-bold text-white mb-3">Your Cart</h1>
+                    <p className="text-gray-400 mb-2">You are not logged in.</p>
                     <p className="text-gray-500 text-sm mb-8">
-                        Login untuk melihat dan mengelola keranjang belanja kamu.
+                        Sign in to view and manage your shopping cart.
                     </p>
 
                     <div className="flex gap-3">
                         <Link href="/login">
                             <button className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-[#0D1229] font-bold rounded-xl transition shadow-lg shadow-cyan-500/20">
-                                Login
+                                Sign In
                             </button>
                         </Link>
                         <Link href="/register">
                             <button className="px-6 py-3 border border-cyan-500/50 hover:border-cyan-400 text-cyan-400 hover:text-cyan-300 font-bold rounded-xl transition">
-                                Daftar
+                                Register
                             </button>
                         </Link>
                     </div>
 
                     <div className="mt-10 text-sm text-gray-600">
-                        atau{" "}
+                        or{" "}
                         <Link href="/" className="text-cyan-500 hover:text-cyan-400 underline underline-offset-2 transition">
-                            lanjut browsing produk
+                            continue browsing
                         </Link>
                     </div>
                 </main>
@@ -181,7 +181,7 @@ export default function CartPage() {
 
             <main className="max-w-4xl mx-auto px-4 py-12">
                 <h1 className="text-3xl font-bold tracking-tight text-white mb-8">
-                    Keranjang Belanja
+                    Your Cart
                 </h1>
 
                 {error && (
@@ -192,12 +192,12 @@ export default function CartPage() {
 
                 {cartItems.length === 0 ? (
                     <div className="text-center py-16 border border-dashed border-[#2D3A6B] rounded-2xl bg-[#111827]">
-                        <p className="text-gray-400 font-medium mb-4">keranjang belanja kamu masih kosong.</p>
+                        <p className="text-gray-400 font-medium mb-4">Your cart is empty.</p>
                         <button
                             onClick={() => router.push("/")}
                             className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-[#0D1229] rounded-xl text-sm font-bold transition shadow-lg shadow-cyan-500/20"
                         >
-                            mulai berbelanja
+                            Start Shopping
                         </button>
                     </div>
                 ) : (
@@ -207,7 +207,7 @@ export default function CartPage() {
                             {cartItems.map((entry) => {
                                 const product = entry.item_id || entry.itemId;
                                 const productId = product?._id || entry._id;
-                                const productName = product?.name || product?.title || "produk tidak dikenal";
+                                const productName = product?.name || product?.title || "Unknown product";
                                 const productImg = product?.picture_url || product?.image;
                                 const price = entry.price_snap ?? 0;
                                 const itemSubtotal = price * entry.qty;
@@ -227,7 +227,7 @@ export default function CartPage() {
                                                     {productName}
                                                 </h3>
                                                 <p className="text-sm text-gray-400">
-                                                    Rp {price.toLocaleString("id-ID")} / produk
+                                                    Rp {price.toLocaleString("id-ID")} / item
                                                 </p>
                                             </div>
                                         </div>
@@ -249,7 +249,7 @@ export default function CartPage() {
                                                 disabled={actionLoading === productId}
                                                 onClick={() => handleDeleteItem(productId)}
                                                 className="text-gray-600 hover:text-rose-400 transition p-1 disabled:opacity-50"
-                                                title="hapus item"
+                                                title="Remove item"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -264,7 +264,7 @@ export default function CartPage() {
                         {/* Summary & checkout */}
                         <div className="p-6 bg-[#111827] border border-[#1E3A5F] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
                             <div>
-                                <p className="text-sm font-medium text-gray-400 mb-1">Total Subtotal</p>
+                                <p className="text-sm font-medium text-gray-400 mb-1">Order Total</p>
                                 <p className="text-2xl font-bold text-cyan-400">
                                     Rp {calculateGrandTotal().toLocaleString("id-ID")}
                                 </p>
@@ -274,7 +274,7 @@ export default function CartPage() {
                                 disabled={checkoutLoading}
                                 className="w-full sm:w-auto px-8 py-3.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-gray-700 disabled:text-gray-500 text-[#0D1229] font-bold text-sm rounded-xl transition shadow-lg shadow-cyan-500/20"
                             >
-                                {checkoutLoading ? "memproses..." : "lanjut ke pembayaran"}
+                                {checkoutLoading ? "Processing..." : "Proceed to Checkout"}
                             </button>
                         </div>
                     </div>
