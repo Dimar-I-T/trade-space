@@ -31,25 +31,25 @@ interface Item {
     soldCount?: number;
 }
 
-// Komponen Card review
+// Review card component
 const ReviewCard = ({ review, currentUser }: { review: Review; currentUser: any }) => {
-    const [reviewerName, setReviewerName] = useState<string>("memuat...");
+    const [reviewerName, setReviewerName] = useState<string>("Loading...");
 
     useEffect(() => {
         const reviewerId = review.from_user || review.user_id || review.userId || review.user;
 
         if (!reviewerId) {
-            setReviewerName("pengguna anonim");
+            setReviewerName("Anonymous");
             return;
         }
 
         if (typeof reviewerId === "object") {
-            setReviewerName(reviewerId.username || reviewerId.name || "pengguna");
+            setReviewerName(reviewerId.username || reviewerId.name || "user");
             return;
         }
 
         if (currentUser && currentUser._id === reviewerId) {
-            setReviewerName(currentUser.username || "Kamu");
+            setReviewerName(currentUser.username || "You");
             return;
         }
 
@@ -57,37 +57,37 @@ const ReviewCard = ({ review, currentUser }: { review: Review; currentUser: any 
             .then(res => res.json())
             .then(data => {
                 if (data.data) {
-                    setReviewerName(data.data.username || data.data.name || "pengguna");
+                    setReviewerName(data.data.username || data.data.name || "user");
                 } else {
-                    setReviewerName("pengguna anonim");
+                    setReviewerName("Anonymous");
                 }
             })
-            .catch(() => setReviewerName("pengguna anonim"));
+            .catch(() => setReviewerName("Anonymous"));
 
     }, [review, currentUser]);
 
     const rawDate = review.createdAt || review.date;
     const formattedDate = rawDate
-        ? new Date(rawDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+        ? new Date(rawDate).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })
         : "";
 
     return (
-        <div className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-[#111827] border border-[#2D3A6B] rounded-xl p-5 shadow-lg">
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
-                    <span className="font-bold text-sm text-neutral-900 capitalize">
+                    <span className="font-bold text-sm text-white capitalize">
                         {reviewerName}
                     </span>
                     {formattedDate && (
-                        <span className="text-xs text-neutral-400 font-medium">• {formattedDate}</span>
+                        <span className="text-xs text-gray-500 font-medium">• {formattedDate}</span>
                     )}
                 </div>
                 <div className="flex items-center gap-1 text-amber-500 text-xs">
                     {"★".repeat(review.rating)}
-                    <span className="text-neutral-300">{"★".repeat(5 - review.rating)}</span>
+                    <span className="text-gray-600">{"★".repeat(5 - review.rating)}</span>
                 </div>
             </div>
-            <p className="text-neutral-700 text-sm leading-relaxed">{review.comment}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">{review.comment}</p>
         </div>
     );
 };
@@ -138,7 +138,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                 setReviews(extractedReviews.reverse());
             } catch (err) {
-                setMessage("produk tidak ditemukan");
+                setMessage("Product not found");
             } finally {
                 setLoading(false);
             }
@@ -157,16 +157,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             });
 
             if (res.ok) {
-                setMessage("berhasil ditambahkan ke keranjang!");
+                setMessage("Added to cart!");
                 router.push("/cart");
             } else if (res.status === 401 || res.status === 403) {
                 router.push("/login");
             } else {
                 const data = await res.json();
-                setMessage(data.message || "gagal menambahkan ke keranjang");
+                setMessage(data.message || "Failed to add to cart");
             }
         } catch (err) {
-            setMessage("terjadi kesalahan sistem");
+            setMessage("Something went wrong. Please try again.");
         } finally {
             setActionLoading(false);
         }
@@ -175,7 +175,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newComment.trim()) {
-            setReviewMessage("komentar tidak boleh kosong");
+            setReviewMessage("Comment cannot be empty.");
             return;
         }
 
@@ -209,14 +209,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 setReviews((prev) => [addedReview, ...prev]);
                 setNewComment("");
                 setNewRating(5);
-                setReviewMessage("Review berhasil ditambahkan!");
+                setReviewMessage("Review submitted successfully!");
                 setTimeout(() => setReviewMessage(""), 3000);
             } else {
                 const errData = await res.json();
-                setReviewMessage(errData.message || "gagal menambahkan review");
+                setReviewMessage(errData.message || "Failed to submit review.");
             }
         } catch (err) {
-            setReviewMessage("terjadi kesalahan sistem");
+            setReviewMessage("Something went wrong. Please try again.");
         } finally {
             setSubmitReviewLoading(false);
         }
@@ -224,18 +224,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-white text-neutral-800 flex items-center justify-center">
-                <p className="text-lg font-medium animate-pulse">memuat produk...</p>
+            <div className="min-h-screen bg-[#0D1229] text-white flex items-center justify-center">
+                <p className="text-lg font-medium animate-pulse">Loading product...</p>
             </div>
         );
     }
 
     if (!item) {
         return (
-            <div className="min-h-screen bg-white text-neutral-800 flex flex-col items-center justify-center gap-4">
-                <p className="text-xl text-neutral-500 font-medium">{message || "produk tidak ditemukan"}</p>
-                <button onClick={() => router.push("/")} className="px-5 py-2.5 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 transition shadow-sm">
-                    kembali ke beranda
+            <div className="min-h-screen bg-[#0D1229] text-white flex flex-col items-center justify-center gap-4">
+                <p className="text-xl text-gray-400 font-medium">{message || "Product not found"}</p>
+                <button onClick={() => router.push("/")} className="px-5 py-2.5 bg-cyan-500 rounded-lg text-sm font-medium text-[#0D1229] font-bold hover:bg-cyan-400 transition shadow-sm">
+                    Back to Home
                 </button>
             </div>
         );
@@ -245,52 +245,52 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const displaySold = item.sold ?? item.soldCount ?? 0;
 
     return (
-        <div className="min-h-screen bg-white text-neutral-800">
+        <div className="min-h-screen bg-[#0D1229] text-white">
             <Navbar />
 
             <main className="max-w-6xl mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start mb-16">
-                    <div className="w-full aspect-square bg-neutral-50 rounded-2xl overflow-hidden border border-neutral-200 flex items-center justify-center relative shadow-sm">
+                    <div className="w-full aspect-square bg-[#111827] rounded-2xl overflow-hidden border border-[#1E3A5F] flex items-center justify-center relative shadow-sm">
                         {item.picture_url ? (
                             <img src={item.picture_url} alt={item.name} className="object-cover w-full h-full" />
                         ) : (
-                            <span className="text-neutral-400 text-sm font-medium">tidak ada gambar</span>
+                            <span className="text-gray-500 text-sm font-medium">No image</span>
                         )}
                     </div>
 
                     <div className="flex flex-col h-full justify-between">
                         <div>
                             <div className="flex flex-wrap items-center gap-3 mb-4">
-                                <span className="inline-block px-3 py-1 bg-neutral-100 border border-neutral-200 rounded-full text-xs text-neutral-600 font-semibold uppercase tracking-wider">
-                                    {item.category || "umum"}
+                                <span className="inline-block px-3 py-1 bg-[#1A2244] border border-[#1E3A5F] rounded-full text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                                    {item.category || "General"}
                                 </span>
 
-                                <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-600 text-xs font-bold">
+                                <div className="flex items-center gap-1 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full text-amber-600 text-xs font-bold">
                                     <span>★</span>
                                     <span>{displayRating > 0 ? displayRating.toFixed(1) : "0.0"}</span>
-                                    <span className="text-neutral-400 font-normal">({reviews.length} ulasan)</span>
+                                    <span className="text-gray-500 font-normal">({reviews.length} {reviews.length === 1 ? "review" : "reviews"})</span>
                                 </div>
 
-                                <div className="text-xs bg-neutral-100 border border-neutral-200 text-neutral-600 px-2.5 py-1 rounded-full font-medium">
-                                    terjual <span className="font-bold text-neutral-900">{displaySold}</span> produk
+                                <div className="text-xs bg-[#1A2244] border border-[#1E3A5F] text-gray-400 px-2.5 py-1 rounded-full font-medium">
+                                    <span className="font-bold text-white">{displaySold}</span> sold
                                 </div>
                             </div>
 
-                            <h1 className="text-3xl font-bold tracking-tight text-neutral-900 mb-2">{item.name}</h1>
+                            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">{item.name}</h1>
 
-                            <p className="text-2xl font-bold text-blue-600 mb-6">
+                            <p className="text-2xl font-bold text-cyan-400 mb-6">
                                 Rp {(item.price ?? 0).toLocaleString("id-ID")}
                             </p>
 
-                            <div className="border-t border-neutral-200 pt-6 mb-6">
-                                <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">deskripsi</h3>
-                                <p className="text-neutral-700 leading-relaxed text-sm whitespace-pre-line">{item.description}</p>
+                            <div className="border-t border-[#1E3A5F] pt-6 mb-6">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
+                                <p className="text-gray-300 leading-relaxed text-sm whitespace-pre-line">{item.description}</p>
                             </div>
 
-                            <div className="border-t border-neutral-200 pt-6 mb-6">
-                                <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-3">spesifikasi</h3>
+                            <div className="border-t border-[#1E3A5F] pt-6 mb-6">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Specifications</h3>
                                 {item.specs ? (
-                                    <div className="text-sm text-neutral-700 space-y-1">
+                                    <div className="text-sm text-gray-300 space-y-1">
                                         {Array.isArray(item.specs) ? (
                                             <ul className="list-disc list-inside">
                                                 {item.specs.map((spec, i) => <li key={i}>{spec}</li>)}
@@ -306,27 +306,27 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                         )}
                                     </div>
                                 ) : (
-                                    <p className="text-xs text-neutral-400 italic">spesifikasi produk tidak tersedia</p>
+                                    <p className="text-xs text-gray-500 italic">No specifications available.</p>
                                 )}
                             </div>
                         </div>
 
-                        <div className="border-t border-neutral-200 pt-6 mt-auto">
+                        <div className="border-t border-[#1E3A5F] pt-6 mt-auto">
                             <div className="flex items-center justify-between mb-4">
-                                <span className="text-sm font-medium text-neutral-500">stok tersedia: <span className="text-neutral-900 font-bold">{item.stock}</span></span>
+                                <span className="text-sm font-medium text-gray-400">Stock: <span className="text-white font-bold">{item.stock}</span></span>
 
                                 {item.stock > 0 && (
-                                    <div className="flex items-center border border-neutral-200 bg-neutral-50 rounded-lg overflow-hidden shadow-sm">
+                                    <div className="flex items-center border border-[#1E3A5F] bg-[#111827] rounded-lg overflow-hidden shadow-sm">
                                         <button
                                             onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                            className="px-3 py-1.5 hover:bg-neutral-200 text-neutral-600 font-semibold transition"
+                                            className="px-3 py-1.5 hover:bg-[#1A2244] text-gray-400 font-semibold transition"
                                         >
                                             -
                                         </button>
-                                        <span className="px-4 text-sm font-bold w-12 text-center text-neutral-800">{quantity}</span>
+                                        <span className="px-4 text-sm font-bold w-12 text-center text-white">{quantity}</span>
                                         <button
                                             onClick={() => setQuantity(q => Math.min(item.stock, q + 1))}
-                                            className="px-3 py-1.5 hover:bg-neutral-200 text-neutral-600 font-semibold transition"
+                                            className="px-3 py-1.5 hover:bg-[#1A2244] text-gray-400 font-semibold transition"
                                         >
                                             +
                                         </button>
@@ -338,18 +338,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={actionLoading}
-                                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-200 disabled:text-neutral-400 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-white shadow-sm"
+                                    className="w-full py-3.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-[#1A2244] disabled:text-gray-500 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-white shadow-sm"
                                 >
-                                    {actionLoading ? "memproses..." : "beli sekarang"}
+                                    {actionLoading ? "Adding..." : "Add to Cart"}
                                 </button>
                             ) : (
-                                <div className="w-full py-3.5 bg-neutral-100 text-neutral-400 border border-neutral-200 rounded-xl text-center font-bold text-sm">
-                                    stok habis
+                                <div className="w-full py-3.5 bg-[#1A2244] text-gray-500 border border-[#1E3A5F] rounded-xl text-center font-bold text-sm">
+                                    Out of Stock
                                 </div>
                             )}
 
                             {message && (
-                                <p className={`mt-4 text-center text-xs font-bold ${message.includes("berhasil") ? "text-emerald-600" : "text-rose-600"}`}>
+                                <p className={`mt-4 text-center text-xs font-bold ${message.includes("Added") ? "text-emerald-400" : "text-rose-400"}`}>
                                     {message}
                                 </p>
                             )}
@@ -357,23 +357,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
 
-                <div className="border-t border-neutral-200 pt-12">
-                    <h2 className="text-xl font-bold text-neutral-900 mb-8">Review & komentar pembeli</h2>
+                <div className="border-t border-[#1E3A5F] pt-12">
+                    <h2 className="text-xl font-bold text-white mb-8">Reviews</h2>
 
-                    <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 shadow-sm mb-8">
-                        <h3 className="font-bold text-neutral-900 text-sm mb-4">
-                            tulis review sebagai <span className="text-blue-600 capitalize">{currentUser?.username || "pengguna"}</span>
+                    <div className="bg-[#111827] border border-[#2D3A6B] rounded-xl p-6 shadow-sm mb-8">
+                        <h3 className="font-bold text-white text-sm mb-4">
+                            Write a review as <span className="text-cyan-400 capitalize">{currentUser?.username || "user"}</span>
                         </h3>
                         <form onSubmit={handleSubmitReview} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">rating</label>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rating</label>
                                 <div className="flex items-center gap-1">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
                                             key={star}
                                             type="button"
                                             onClick={() => setNewRating(star)}
-                                            className={`text-2xl focus:outline-none transition-colors ${star <= newRating ? "text-amber-500" : "text-neutral-300"}`}
+                                            className={`text-2xl focus:outline-none transition-colors ${star <= newRating ? "text-amber-500" : "text-gray-600"}`}
                                         >
                                             ★
                                         </button>
@@ -381,32 +381,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">komentar</label>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Comment</label>
                                 <textarea
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
                                     rows={3}
-                                    className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm bg-white"
-                                    placeholder="bagaimana pendapatmu tentang produk ini?"
+                                    className="w-full px-4 py-3 border border-[#2D3A6B] rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm bg-[#1A2244] text-white placeholder:text-gray-600"
+                                    placeholder="Share your thoughts about this product..."
                                 ></textarea>
                             </div>
                             <div className="flex items-center justify-between pt-2">
-                                <span className={`text-xs font-bold ${reviewMessage.includes('berhasil') ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                <span className={`text-xs font-bold ${reviewMessage.includes('successfully') ? 'text-emerald-400' : 'text-rose-400'}`}>
                                     {reviewMessage}
                                 </span>
                                 <button
                                     type="submit"
                                     disabled={submitReviewLoading}
-                                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 text-white font-bold text-sm rounded-lg transition shadow-sm"
+                                    className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-[#1A2244] text-white font-bold text-sm rounded-lg transition shadow-sm"
                                 >
-                                    {submitReviewLoading ? "mengirim..." : "kirim review"}
+                                    {submitReviewLoading ? "Submitting..." : "Submit Review"}
                                 </button>
                             </div>
                         </form>
                     </div>
 
                     {reviews.length === 0 ? (
-                        <p className="text-sm text-neutral-400 italic">belum ada review untuk produk ini. jadilah yang pertama!</p>
+                        <p className="text-sm text-gray-500 italic">No reviews yet. Be the first!</p>
                     ) : (
                         <div className="space-y-6">
                             {reviews.map((review) => (
