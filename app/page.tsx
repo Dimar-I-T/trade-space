@@ -45,7 +45,7 @@ export default function Home() {
             Explore Products
           </button>
 
-          <button className="rounded-2xl border border-blue-950 px-8 py-4 text-blue-950 transition hover:bg-blue-50">
+          <button className="rounded-2xl  bg-blue-950 px-8 py-4 text-white transition hover:bg-blue-900">
             Sell Your Product
           </button>
 
