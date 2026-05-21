@@ -1,6 +1,10 @@
 # TradeSpace
 A student-focused marketplace platform for buying and selling tech gadgets and electronics among verified university students. The platform accommodates a wide variety of product categories such as laptops, smartphones, and peripherals, where each listing can have different and flexible attributes depending on its product type. Access is restricted to verified university students through campus email verification, creating a trusted and focused trading community.
 
+## Live Demo
+https://trade-space-eight.vercel.app
+
+
 # Tech Stack
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
